@@ -1,0 +1,6 @@
+{
+  "name": "Reputation Loop Exam",
+  "dependencies": {
+    "jquery": "~2.1.4"
+  }
+}
