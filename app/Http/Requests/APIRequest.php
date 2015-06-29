@@ -13,7 +13,7 @@ class APIRequest extends Request
      */
     public function authorize()
     {
-        return false;
+        return TRUE;
     }
 
     /**
@@ -25,7 +25,8 @@ class APIRequest extends Request
     {
         return [
             //
-            ''
+            'sources'       => 'required',
+            'noOfReviews'   => 'required'
         ];
     }
 }

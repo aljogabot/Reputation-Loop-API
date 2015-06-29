@@ -13,10 +13,13 @@
         protected $url;
         protected $apiKey;
         protected $params = array();
+        protected $config;
+
+        protected $businessRepository;
 
         public function __construct( BusinessRepository $businessRepository ) {
-            $config = config( 'api.settings' );
-            $this->setDefaults( $config );
+            $this->config = config( 'api.settings' );
+            $this->setDefaults( $this->config );
             $this->businessRepository = $businessRepository;
         }
 
@@ -30,6 +33,18 @@
                  ->defaultParams( $config[ 'defaults' ] );
 
             return $this;
+        }
+
+        public function setSources( $sources = array() ) {
+
+            if( empty( $sources ) ) {
+                $sources = $this->config[ 'sources' ];
+            }
+
+            $this->params[] = $sources;
+
+            return $this;
+
         }
 
         /**
@@ -69,6 +84,11 @@
             return $this;
         }
 
+        public function setOffset( $page ) {
+            $offset = ( $page - 1 ) * $this->params[ 'noOfReviews' ];
+            return $this->set( 'offset', $offset );
+        }
+
 
         /**
          * @return $this
@@ -79,9 +99,7 @@
                 file_get_contents( $this->url . $this->apiKey . '&' . http_build_query( $this->params ) )
             );
 
-            dd( $data );
-
-            return $this->businessRepository->init( $data );
+            return $this->businessRepository->init( $data, $this->params );
 
         }
 

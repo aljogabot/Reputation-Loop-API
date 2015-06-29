@@ -1,56 +1,19 @@
 <div class="bs-component">
     <table class="table table-striped table-hover ">
         <thead>
-        <tr>
-            <th>#</th>
-            <th>Column heading</th>
-            <th>Column heading</th>
-            <th>Column heading</th>
-        </tr>
+            <tr>
+                <th>Name</th>
+                <th>Rating</th>
+                <th>Customer URL</th>
+                <th>Review Source</th>
+            </tr>
         </thead>
-        <tbody>
-        <tr>
-            <td>1</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-        </tr>
-        <tr>
-            <td>2</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-        </tr>
-        <tr class="info">
-            <td>3</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-        </tr>
-        <tr class="success">
-            <td>4</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-        </tr>
-        <tr class="danger">
-            <td>5</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-        </tr>
-        <tr class="warning">
-            <td>6</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-        </tr>
-        <tr class="active">
-            <td>7</td>
-            <td>Column content</td>
-            <td>Column content</td>
-            <td>Column content</td>
-        </tr>
+        <tbody id="reviews-container">
+            @include( 'reviews.reviews' )
         </tbody>
     </table>
-    <div class="btn btn-primary btn-xs" id="source-button" style="display: none;">&lt; &gt;</div></div>
+    <div class="btn btn-primary btn-xs" id="source-button" style="display: none;">&lt; &gt;</div>
+    <ul class="pagination pagination-lg">
+        <?php echo $business->paginate()->render(); ?>
+    </ul>
+</div>

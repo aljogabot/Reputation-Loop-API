@@ -76,9 +76,14 @@ Global_Bogart.prototype = {
 					}
 				}
 
+                $( element ).find( '#alert-message-box' ).hide();
+
                 $( element ).ajaxSubmit(
                     {
                         data: $extra_post_variables,
+                        headers : {
+                            'X-CSRF-TOKEN' : $( 'meta[name="csrf-token"]' ).attr( 'content' )
+                        },
                         success: function( response ) {
 
                             $self.response = response;
@@ -88,16 +93,56 @@ Global_Bogart.prototype = {
                             if( callback ) {
 
                                 if( $.isFunction( callback ) ) {
-                                    callback( $.parseJSON( $self.response ) );
+                                    callback( $self.response );
                                 }
 
                                 if( $.isPlainObject( callback ) && $.isFunction( callback.after_submit ) ) {
 
-                                    callback.after_submit( $.parseJSON( $self.response ) );
+                                    callback.after_submit( $self.response );
 
                                 }
 
                             }
+
+                        },
+
+                        error : function( $response ) {
+
+                            if( $response.status == 401 )
+                                $( location ).prop( 'pathname', '/' );
+
+                            if( $response.status == 422 ) {
+
+                                var $response_object = {};
+                                $response_object.field_errors = $response.responseJSON;
+
+                                // Automatically this is an error ...
+                                $response_object.success = false;
+
+                                var $ajax_error_message = $response_object.field_errors.ajax_error_message ?
+                                    $response_object.field_errors.ajax_error_message : 'There was an error';
+
+                                $response_object.message = $ajax_error_message;
+
+                                $self.read_response( $response_object, element );
+
+                                if( callback ) {
+
+                                    if( $.isFunction( callback ) ) {
+                                        callback( $response_object );
+                                    }
+
+                                    if( $.isPlainObject( callback ) && $.isFunction( callback.after_submit ) ) {
+
+                                        callback.after_submit( $response_object );
+
+                                    }
+
+                                }
+
+
+                            }
+
 
                         }
                     }
@@ -131,6 +176,9 @@ Global_Bogart.prototype = {
 				url : url,
 				type : 'POST',
 				dataType: 'json',
+                headers: {
+                    'X-CSRF-TOKEN' : $( 'meta[name="csrf-token"]' ).attr( 'content' )
+                },
 				data : parameters,
 				success : function( response ) {
 					
@@ -153,14 +201,42 @@ Global_Bogart.prototype = {
 					}
 					
 				},
-				
-				error : function( error ) {
-					
-					// ...
-					if( $self.use_loader ) {
-						 $self.normal();
-					}
-				}
+
+                error : function( $response ) {
+
+                    if( $response.status == 401 )
+                        $( location ).prop( 'pathname', '/' );
+
+                    if( $response.status == 422 ) {
+
+                        var $response_object = {};
+                        $response_object.field_errors = $response.responseJSON;
+
+                        // Automatically this is an error ...
+                        $response_object.success = false;
+
+                        $response_object.message = 'There was an error.';
+
+                        $self.read_response( $response_object, element );
+
+                        if( callback ) {
+
+                            if( $.isFunction( callback ) ) {
+                                callback( $response_object );
+                            }
+
+                            if( $.isPlainObject( callback ) && $.isFunction( callback.after_submit ) ) {
+
+                                callback.after_submit( $response_object );
+
+                            }
+
+                        }
+
+
+                    }
+
+                }
 			}
 			
 		);
@@ -442,8 +518,23 @@ Global_Bogart.prototype = {
 						
 					}
 
-					$input.after( '<span class="help-inline text-danger" for="' + $key + '" generated="true">' + $value + '</span>' )
-						  .closest( '.form-group' ).removeClass( 'has-success' ).addClass( 'has-error' );
+                    if(
+                        $input.parent().find( '.input-group-addon' ).length
+                        ||
+                        ( $input.is( ':checkbox' ) )
+                    ) {
+
+                        $input.closest( '.form-group' ).append( '<span class="help-inline text-danger" for="' + $key + '" generated="true">' + $value + '</span>' )
+                              .closest( '.form-group' ).removeClass( 'has-success' ).addClass( 'has-error' );
+
+                    } else {
+
+                        $input.after( '<span class="help-inline text-danger" for="' + $key + '" generated="true">' + $value + '</span>' )
+                              .closest( '.form-group' ).removeClass( 'has-success' ).addClass( 'has-error' );
+
+                    }
+
+
 
 				}
 			);
@@ -474,7 +565,7 @@ Global_Bogart.prototype = {
 			$( 'body' ).append( 
 				'<div id="overlay" style="display: none;">' +
 					'<div class="col-md-4"></div>' +
-					'<div class="status col-md-4"><img src="images/loading-image.gif" /><br />Loading ...</div>' +
+					'<div class="status col-md-4"><img src="/images/loading-image.gif" /><br />Loading ...</div>' +
 					'<div class="col-md-4"></div>' +
 				'</div>' 
 			);
