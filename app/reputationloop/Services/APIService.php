@@ -2,6 +2,8 @@
 
     namespace ReputationLoop\Services;
 
+    use ReputationLoop\Repositories\BusinessRepository;
+
     /**
      * Class APIService
      * @package ReputationLoop\Services
@@ -11,6 +13,12 @@
         protected $url;
         protected $apiKey;
         protected $params = array();
+
+        public function __construct( BusinessRepository $businessRepository ) {
+            $config = config( 'api.settings' );
+            $this->setDefaults( $config );
+            $this->businessRepository = $businessRepository;
+        }
 
         /**
          * @param array $config
@@ -62,15 +70,18 @@
         }
 
 
-
         /**
-         * @return mixed
+         * @return $this
          */
-        public function fetch(  ) {
+        public function fetch() {
 
-            return json_decode(
+            $data = json_decode(
                 file_get_contents( $this->url . $this->apiKey . '&' . http_build_query( $this->params ) )
             );
+
+            dd( $data );
+
+            return $this->businessRepository->init( $data );
 
         }
 

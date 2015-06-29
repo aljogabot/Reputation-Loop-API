@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Http\Requests\APIRequest;
+use ReputationLoop\Repositories\BusinessRepository;
 use ReputationLoop\Services\APIService;
 
 class ReviewsController extends Controller
@@ -15,8 +16,6 @@ class ReviewsController extends Controller
 
     public function __construct( APIService $api ) {
         $this->api = $api;
-        $this->config = config( 'api.settings' );
-        $this->api->setDefaults( $this->config );
     }
 
     /**
@@ -27,9 +26,9 @@ class ReviewsController extends Controller
     public function index()
     {
         //
-        $data = $this->api->fetch();
+        $business = $this->api->fetch();
 
-        return view( 'reviews/index', [ 'data' => $data ] );
+        return view( 'reviews/index', [ 'business' => $business ] );
 
     }
 
@@ -39,7 +38,7 @@ class ReviewsController extends Controller
      *
      * @return Json response
      */
-    public function process( APIRequest $request, APIService $api_service ) {
+    public function process( APIRequest $request ) {
 
         $parameters = $request->all();
 
