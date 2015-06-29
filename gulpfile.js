@@ -15,12 +15,13 @@ elixir(
     function( mix ) {
 
         mix.copy( 'resources/assets/bower/bootswatch/bootstrap.flatly.css', 'resources/assets/css/bootstrap.flatly.css' );
-        mix.copy( 'resources/assets/bower/bootswatch/bootstrap.flatly.css', 'resources/assets/css/bootstrap.flatly.css' );
+        mix.copy( 'resources/assets/bower/bootswatch/bootswatch.css', 'resources/assets/css/bootswatch.css' );
         mix.copy( 'resources/assets/bower/jquery/dist/jquery.js', 'resources/assets/js/jquery.js' );
 
         mix.styles(
             [
-                'bootstrap.css'
+                'bootstrap.flatly.css',
+                'bootswatch.css'
             ],
             'public/css/app-all.css'
         );
@@ -28,7 +29,14 @@ elixir(
         mix.scripts(
             [
                 'jquery.js',
-                'app.js'
+                'libs/lazyload.js',
+                'libs/jquery.gritter.min.js',
+                'libs/jquery.form.js',
+                'libs/humanmsg.js',
+                'core/global.js',
+                'core/tools.js',
+                'app.js',
+                'api-results.js'
             ],
             'public/js/app-all.js'
         );

@@ -11,10 +11,5 @@
 |
 */
 
-Route::get( '/',
-    function () {
-        return view( 'app' );
-    }
-);
-
-Route::post( '/' , 'ApiProcessController@index' );
+Route::get( '/', 'ReviewsController@index' );
+Route::post( '/' , 'ReviewsController@process' );

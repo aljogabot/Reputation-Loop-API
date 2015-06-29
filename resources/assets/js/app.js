@@ -5,11 +5,25 @@ function Main_Application() {
 Main_Application.prototype = {
 
     construct : function() {
-        this.init_api();
+        this.init_form();
     },
 
-    init_api : function() {
+    init_form : function() {
+        $Site.form(
+            'form[name=reviews-form]',
+            {},
+            function( $json_response ) {
+                if( $json_response.success ) {
 
+                    if( $API_Results ) {
+                        $API_Results.construct();
+                    } else {
+                        $API_Results = new API_Results();
+                    }
+
+                }
+            }
+        );
     }
 
 };
